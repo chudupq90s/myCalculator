@@ -1,5 +1,7 @@
 let currentValue = '';
 let previousValue = '';
+let firstOp = '';
+let secondOp = '';
 
 document.addEventListener('DOMContentLoaded',function(){
     //store all components of HTML in JS variables
@@ -18,15 +20,31 @@ document.addEventListener('DOMContentLoaded',function(){
     //add the operator and second number
     operatorButtons.forEach(op => op.addEventListener('click', function(e){
         handleOperator(e.target.textContent);
-        previousOperandTextElement.textContent = previousValue + ' ' + opValue;
+        if(secondOp != ''){
+            compute(previousValue, currentValue, firstOp);
+            
+            previousValue = result;
+            currentValue = '';
+            firstOp  = secondOp;
+            secondOp ='';
+            console.log(result);
+            console.log(previousValue);
+            console.log(currentValue);
+            console.log(firstOp);
+            console.log(secondOp);
+            
+        }
+        previousOperandTextElement.textContent = previousValue + ' ' + firstOp;
         currentOperandTextElement.textContent = currentValue;
     }))
     //compute the result when '=' is clicked
     equalButton.addEventListener('click', function(){
-        compute(previousValue, currentValue, opValue);
+        compute(previousValue, currentValue, firstOp);
         currentOperandTextElement.textContent = result;
-        previousOperandTextElement.textContent = previousValue + ' ' + opValue + currentValue;
+        previousOperandTextElement.textContent = ' ' ;
         currentValue = result;
+        previousValue = '';
+        firstOp = secondOp = '';
     });
     //clear all 
     acButton.addEventListener('click', function(){
@@ -36,14 +54,20 @@ document.addEventListener('DOMContentLoaded',function(){
     })
     //delete 
     deleteButton.addEventListener('click', function(){
-
+        deleteB();
+        currentOperandTextElement.textContent = currentValue;
     });
 });
 function handleNumber(num){
+    if((num ==='.') && (currentValue.includes('.'))) return
     currentValue += num;
 };
 function handleOperator(op){
-    opValue = op;
+    if (firstOp !== ''){
+        secondOp = op;
+        return secondOp
+    }
+    firstOp = op;
     previousValue = currentValue;
     currentValue = '';
 };
@@ -54,7 +78,7 @@ function compute(num1, num2, operation){
         result = num1 + num2;
     }
     else if (operation === '-'){
-        result = num1 - num2; 
+       result = num1 - num2; 
     }
     else if (operation === '*'){
         result = num1 * num2; 
@@ -62,14 +86,17 @@ function compute(num1, num2, operation){
     else if (operation === '÷'){
         result = num1/num2; 
     }
-
-
 }
 function clearAll(){
     currentValue = '';
     previousValue = '';
-    opValue ='';
+    firstOp ='';
+    secondOp='';
 };
+function deleteB(){
+    currentValue = currentValue.toString().slice(0,-1);
+};
+
 
 
 
